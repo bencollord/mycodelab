@@ -2,12 +2,10 @@
 Associated Files: index.php, logout.php, add.php, edit.html.php, and a function called myFunction() used to delete records, then this will use delete.php -->
 <!DOCTYPE html>
 
-<html>
-<head>
-    <title>User Home Page</title>
-</head>
 
 <?php
+$title = "User Home Page";
+
     session_start(); //starts the session
     if($_SESSION['user']){
     }
@@ -20,7 +18,7 @@ Associated Files: index.php, logout.php, add.php, edit.html.php, and a function 
 <body>
 <h2>User Home Page</h2>
 <?php echo strftime("%Y %B %d"); ?>
-<p>Hello <?php Print "$user"?>!</p> <!--displays user's name -->
+<p>Hello <?php echo "$user"?>!</p> <!--displays user's name -->
 <a href="logout.php">Click here to logout.</a><br/><br/>
 <form action="add.php" method="POST">
     Add more to list: <input type="text" name="details"/><br/>
@@ -40,20 +38,18 @@ Associated Files: index.php, logout.php, add.php, edit.html.php, and a function 
     </tr>
     
     <?php
-        @mysql_connect("localhost", "ben", "WEBd#7") or die(mysql_error());
-//Connect to server - this statement uses deprecated methods, do not use them in production.
-    @mysql_select_db("userauthdb") or die ("Cannot connect to database"); //connect to database - uses deprecated methods, do not use them in production.
+    include('db.inc.php');
     
-    $query = @mysql_query("SELECT * FROM listtbl"); //SQL query
-    while($row = @mysql_fetch_array($query)) {
-        Print "<tr>";
-        Print '<td align = "center">'.$row['id']."</td>";
-        Print '<td align = "center">'.$row['details']."</td>";
-        Print '<td align = "center">'.$row['date_posted']. " - ". $row['time_posted'] ."</td>";
-        Print '<td align = "center">'.$row['date_edited']. " - ". $row['time_edited'] ."</td>";
-        Print '<td align = "center"><a href="edit.html.php?id=' . $row['id'] . '">edit</a></td>';
-        Print '<td align = "center"><a href="#" onclick="myFunction('.$row['id'].')">delete</a></td>';
-        Print '<td align = "center">'.$row['public']."</td>";  
+    $stmt = $dbConn->query("SELECT * FROM listtbl"); //SQL query
+    while($row = $stmt->fetch()) {
+        echo "<tr>";
+        echo '<td align = "center">'.$row['id']."</td>";
+        echo '<td align = "center">'.$row['details']."</td>";
+        echo '<td align = "center">'.$row['date_posted']. " - ". $row['time_posted'] ."</td>";
+        echo '<td align = "center">'.$row['date_edited']. " - ". $row['time_edited'] ."</td>";
+        echo '<td align = "center"><a href="edit.html.php?id=' . $row['id'] . '">edit</a></td>';
+        echo '<td align = "center"><a href="#" onclick="myFunction('.$row['id'].')">delete</a></td>';
+        echo '<td align = "center">'.$row['public']."</td>";  
     }
     ?>
     
@@ -67,5 +63,4 @@ Associated Files: index.php, logout.php, add.php, edit.html.php, and a function 
             }
         }
     </script>
-</body>
-</html>
+
