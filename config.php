@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 $host = 'localhost';
 $database = 'userauthdb';
 $username = 'ben';
 $password = 'WEBd#7';
 
-$sitePath = 'localhost/userauthdemo/myphpwebsiteuserauth/';
+$sitePath = $_SERVER['DOCUMENT_ROOT'] . '/userauthdemo/myphpwebsiteuserauth/';
 
 ?>

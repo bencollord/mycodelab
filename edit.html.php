@@ -3,17 +3,18 @@
 <?php
 session_start(); //starts the session
 if ($_SESSION['user']) {
+  $user = $_SESSION['user']; //assigns user value
+  $id_exists = false;
 } else {
     header("location:index.php"); //redirects if user is not logged in.
 }
-$user      = $_SESSION['user']; //assigns user value
-$id_exists = false;
+
 ?>
 
 
 <h2>Edit listtbl data</h2>
 
-<p>Hello <?php echo $user; ?>!</p> 
+<p>Hello <?php echo $user; ?>!</p>
 <a href="logout.php">Click here to logout.</a><br/><br/>
 <a href="home.users.html.php">Return to user Home Page.</a>
 <h2 align="center">Currently Selected Record</h2>
@@ -25,22 +26,22 @@ $id_exists = false;
         <th>Edit Time</th>
         <th>Public Post</th>
     </tr>
-    
+
      <?php
 if (!empty($_GET['id'])) {
-    $id             = $_GET['id'];
+    $id = $_GET['id'];
     $_SESSION['id'] = $id;
-    $id_exists      = true;
-    
+    $id_exists = true;
+
     include('db.inc.php');
-    
+
     $stmt = $dbConn->prepare("SELECT * FROM listtbl WHERE id=:id"); //SQL query
     $stmt->bindParam(':id', $id);
     $stmt->execute();
-    
+
     $count = $stmt->rowCount();
     if ($count > 0) {
-        
+
         while ($row = $stmt->fetch()) {
             echo "<tr>";
             echo '<td align = "center">' . $row['id'] . "</td>";
@@ -51,11 +52,11 @@ if (!empty($_GET['id'])) {
             echo "</tr>";
         }
     }
-    
+
     else {
         $id_exists = false;
     }
-    
+
 }
 ?>
 </table>
@@ -80,35 +81,25 @@ if ($id_exists) {
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") //Added and  "if" to keep the page secure.
     {
-    
-    include('db.inc.php');
-    
+
+    spl_autoload_register('Autoloader::load')
+
     $details = $_POST['details']; //details is what the user enters.
     $public  = "no";
     $id      = $_SESSION['id'];
-    
-    $time = strftime("%X"); //time
-    $date = strftime("%B %d, %Y"); //date
-    
+
     foreach ($_POST['public'] as $list) //get the data from the checkbox
         {
         if ($list != null) { //checks if checkbox is checked
             $public = "yes"; //sets value
         }
     }
-    
-    $stmt = $dbConn->prepare("UPDATE listtbl SET details=:details, public=:public, date_edited=:date, time_edited=:time WHERE id=:id"); //SQL query
-    $stmt->bindParam(':details', $details);
-    $stmt->bindParam(':public', $public);
-    $stmt->bindParam(':date', $date);
-    $stmt->bindParam(':time', $time);
-    $stmt->bindParam(':id', $id);
-    $stmt->execute();
-    
+
+    $post = new Post();
+    $post->edit($id, $details, $public);
+
     header("location:home.users.html.php");
-    
+
 }
 
 ?>
-
-

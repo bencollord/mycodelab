@@ -5,14 +5,15 @@ Associated Files: index.php, logout.php, add.php, edit.html.php, and a function 
 
 <?php
 $title = "User Home Page";
-
+    require_once('header.html.php');
     session_start(); //starts the session
     if($_SESSION['user']){
-    }
-        else {
+              $user = $_SESSION['user']; //assigns user value
+    } else {
             header("location:index.php"); //redirects if user is not logged in.
         }
-        $user = $_SESSION['user']; //assigns user value
+
+
 ?>
 
 <body>
@@ -36,10 +37,10 @@ $title = "User Home Page";
         <th>Edit</th>
         <th>Delete</th>
     </tr>
-    
+
     <?php
     include('db.inc.php');
-    
+
     $stmt = $dbConn->query("SELECT * FROM listtbl"); //SQL query
     while($row = $stmt->fetch()) {
         echo "<tr>";
@@ -49,10 +50,10 @@ $title = "User Home Page";
         echo '<td align = "center">'.$row['date_edited']. " - ". $row['time_edited'] ."</td>";
         echo '<td align = "center"><a href="edit.html.php?id=' . $row['id'] . '">edit</a></td>';
         echo '<td align = "center"><a href="#" onclick="myFunction('.$row['id'].')">delete</a></td>';
-        echo '<td align = "center">'.$row['public']."</td>";  
+        echo '<td align = "center">'.$row['public']."</td>";
     }
     ?>
-    
+
 </table>
     <script>
         function myFunction(id){
@@ -64,3 +65,4 @@ $title = "User Home Page";
         }
     </script>
 
+<?php require_once('footer.html.php'); ?>

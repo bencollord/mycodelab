@@ -7,15 +7,10 @@ else {
 }
 if ($_SERVER['REQUEST_METHOD'] == "GET") //Added and  "if" to keep the page secure.
     {
-    
-    include('db.inc.php');
-    
-    $id = $_GET['id'];
-    
-    $stmt = $dbConn->prepare("DELETE FROM listtbl WHERE id=:id"); //SQL query
-    $stmt->bindParam(':id', $id);
-    $stmt->execute();
-    
+    spl_autoload_register('Autoloader::load')
+    $post = new Post();
+    $post->delete($_GET['id']);
+
     header("location:home.users.html.php");
 }
 ?>
