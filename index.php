@@ -1,30 +1,37 @@
-<?php require_once('header.html.php'); ?>
-    <h1>Home Page</h1>
-    <a href="login.form.html.php">Click here to login</a><br/>
-    <a href="register.form.html.php">Click here to register</a>
+<?php
 
-<h2 align="center">List</h2>
-<table width="100%" border="1px">
-       <tr>
-        <th>ID</th>
-        <th>Details</th>
-        <th>Post Time</th>
-        <th>Edit Time</th>
-    </tr>
-       <?php
-    require_once('db.inc.php');
-    $query = $dbConn->query("SELECT * FROM listtbl WHERE public='yes'"); //SQL query
+// =============================================================================
+// Application Bootstrap
+// -----------------------------------------------------------------------------
+// - Configure and set up application
+// - Create any sessions or cookies needed
+// - Configure database connection
+// - Set vars or constants for file paths
+// - Define constants and global variables
+// - Create and route HTTP request
+// =============================================================================
 
-    while($row = $query->fetch()) {
-        echo "<tr>";
-        echo '<td>'.$row['id']."</td>";
-        echo '<td>'.$row['details']."</td>";
-        echo '<td>'.$row['date_posted']. " - ". $row['time_posted'] ."</td>";
-        echo '<td>'.$row['date_edited']. " - ". $row['time_edited'] ."</td>";
-        echo "</tr>";
-        }
-        ?>
-</table>
+require_once 'config.php';
+require_once 'library/autoloader.class.php';
 
-<?php require_once('footer.html.php'); ?>
-?>
+$loader = new Autoloader();
+$loader->register();
+
+$app = Application::getInstance();
+
+$app->init(
+  new Router($routerConfigs),
+  new HtmlDocument(
+    TEMPLATE_PATH . 'html.tpl.php',
+    array(
+      CSS_PATH . 'bootstrap.min.css', 
+      CSS_PATH . 'bootstrap-theme.min.css'
+    ),
+    array(
+      JS_PATH . 'jquery.min.js',
+      JS_PATH . 'bootstrap.min.js'
+    )
+  )
+);
+
+$app->execute(new Request());

@@ -9,22 +9,3 @@ name="username" and "password" must match database fields-->
     Enter Password: <input type="password" name="password"        required="required" /><br/>
     <input type="submit" value="Register"/>
 </form>
-
-<?php
-
-spl_autoload_register('Autoloader::load');
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $newUser = new User($_POST['username'], $_POST['password']);
-
-      //method returns "false" if username already taken
-      $registration = $newUser->register();
-      if($registration) {
-        echo '<script>alert("Successfully Registered!");</script>';
-        header("location: login.form.html.php");
-      } else {
-        echo '<script>alert("Username has been taken!");</script>';
-        header("location: register.form.html.php");
-      }
-}
-?>

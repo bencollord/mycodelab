@@ -1,20 +1,5 @@
 <!--Purpose: Home page for logged-in users. Users will be able to write, edit, delete, and view records to/from the database table listtbl. Users will be able to logout.
 Associated Files: index.php, logout.php, add.php, edit.html.php, and a function called myFunction() used to delete records, then this will use delete.php -->
-<!DOCTYPE html>
-
-
-<?php
-$title = "User Home Page";
-    require_once('header.html.php');
-    session_start(); //starts the session
-    if($_SESSION['user']){
-              $user = $_SESSION['user']; //assigns user value
-    } else {
-            header("location:index.php"); //redirects if user is not logged in.
-        }
-
-
-?>
 
 <body>
 <h2>User Home Page</h2>
@@ -23,7 +8,7 @@ $title = "User Home Page";
 <a href="logout.php">Click here to logout.</a><br/><br/>
 <form action="add.php" method="POST">
     Add more to list: <input type="text" name="details"/><br/>
-    Public post? <input type="checkbox" name="public[]" value="yes"/><br/>
+    Public post? <input type="checkbox" name="public" value="yes"/><br/>
     <input type="submit" value="Add to list"/>
 </form>
 
@@ -39,10 +24,7 @@ $title = "User Home Page";
     </tr>
 
     <?php
-    include('db.inc.php');
-
-    $stmt = $dbConn->query("SELECT * FROM listtbl"); //SQL query
-    while($row = $stmt->fetch()) {
+    foreach($rows as $row) {
         echo "<tr>";
         echo '<td align = "center">'.$row['id']."</td>";
         echo '<td align = "center">'.$row['details']."</td>";
@@ -64,5 +46,3 @@ $title = "User Home Page";
             }
         }
     </script>
-
-<?php require_once('footer.html.php'); ?>

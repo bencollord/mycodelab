@@ -1,7 +1,10 @@
 
 <?php
-//the code below will end a user's session and redirect to the index.php page.
-session_start();
-session_destroy();
+$controller = new UserController();
+$session = new SessionHandler();
+
+$controller->logout();
+$session->end();
+
 header("location:index.php");
 ?>
