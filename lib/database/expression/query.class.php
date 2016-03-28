@@ -2,7 +2,7 @@
 
 namespace Lib\Database\Sql;
 
-use Lib\Core\Object;
+use Lib\System\Object;
 use Lib\Database\Connection;
 
 /**

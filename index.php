@@ -11,7 +11,7 @@
 // - Create and route HTTP request
 // =============================================================================
 
-use Lib\Core\Kernel;
+use Lib\Foundation\Kernel;
 
 // Define configuration constants
 require_once 'config.php';

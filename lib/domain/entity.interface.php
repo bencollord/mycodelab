@@ -2,7 +2,7 @@
 
 namespace Lib\Domain;
 
-use Lib\Core\Object;
+use Lib\System\Object;
 
 interface Entity
 {  

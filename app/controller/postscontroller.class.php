@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Lib\Core\Controller;
+use Lib\Foundation\Controller;
 use Lib\View\{View, Page};
 
 class PostsController extends Controller

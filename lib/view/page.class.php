@@ -2,7 +2,7 @@
 
 namespace Lib\View;
 
-use Lib\Core\Object;
+use Lib\System\Object;
 
 class Page extends View implements Renderable
 {

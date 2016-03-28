@@ -2,7 +2,7 @@
 
 namespace Lib\View;
 
-use Lib\Core\Object;
+use Lib\System\Object;
 
 /**
  * Main application display
@@ -69,9 +69,9 @@ class View extends Object implements Renderable
   public function setTemplate($template)
   {
     $path = $this->find($template);
-    
+
     $this->template = $path;
-    
+
     return $this;
   }
 
@@ -104,7 +104,7 @@ class View extends Object implements Renderable
   }
 
   /**
-   * Get a parameter from the $params array.
+   * Gets a value from the $params array.
    * 
    * @param string $name  The key in the array.
    *                                             
@@ -120,9 +120,9 @@ class View extends Object implements Renderable
   }
 
   /**
-   * Set a parameter in the $params array.
+   * Adds a value to the $params array.
    * 
-   * @param string $name  The key to store the value at.
+   * @param string $name  The key the value will be indexed by.
    * 
    * @return $this
    */
@@ -132,7 +132,54 @@ class View extends Object implements Renderable
 
     return $this;
   }
-  
+
+  /**
+   * Adds a parameter by reference.
+   * 
+   * @param  string $name       The key the reference will be indexed by.
+   * @param  mixed  &$reference A reference to an outside variable.
+   *
+   *  @return $this
+   */
+  public function bind($name, &$reference)
+  {
+    if (is_object($reference)) {
+      $this->params[$name] = $reference;
+    } else {
+      $this->params[$name] =& $reference;
+    }
+
+    return $this;
+  }
+
+  /**
+   * Adds a view to the $children array.
+   * 
+   * @param  string $name  The key the child will be indexed by.
+   * @param  View   $child A fully instantiated View object.
+   *                                                 
+   * @return $this
+   */
+  public function attachChild($name, View $child)
+  {
+    $this->children[$name] = $child;
+
+    return $this;
+  }
+
+  /**
+   * Finds and immediately renders a view fron the template provided.
+   * 
+   * Acts as a shorthand method to be used within template files for quick
+   * fetching and rendering of partial views or elemental template fragments.
+   * 
+   * @return string The rendered view output.
+   */
+  public function fetch($template, $params = array())
+  {
+    return (new self($template, $params))->render();
+  }
+
   /**
    * Creates a new View instance and adds it to the $children array.
    * 
@@ -148,12 +195,12 @@ class View extends Object implements Renderable
    *                                
    * @return $this
    */
-  public function addChild($name, $template, $params = array())
+  public function loadChild($name, $template, $params = array())
   {
     $data = array_merge($this->params, $params);
-    
+
     $this->children[$name] = new self($template, $data);
-    
+
     return $this;
   }
 
@@ -172,15 +219,15 @@ class View extends Object implements Renderable
    */
   public function render() 
   {
-    if (!empty($this->children)) {
-      $children = $this->renderChildren();
-      extract($children, EXTR_SKIP);
+    $numChildren = count($this->children);
+
+    for ($i = 0; $i > $numChildren; ++$i) {
+      $this->children[$i]->render();
     }
-    
-    if (!empty($this->params)) {
-      $params = $this->sanitize($this->params, EXTR_SKIP);
-      extract($params);
-    }
+    extract($children, EXTR_SKIP);
+
+    $params = $this->sanitize($this->params, EXTR_SKIP);
+    extract($params);
 
     ob_start();
 
@@ -238,23 +285,6 @@ class View extends Object implements Renderable
     }
 
     return $path;
-  }
-  
-  /**
-   * Renders all child views and returns the output in an array.
-   * 
-   * @return array[string]string  An associative array containing the rendered
-   *                              output of the instance's nested views
-   */
-  protected function renderChildren()
-  {
-    $rendered = array();
-
-    foreach ($this->children as $name => $child) {
-      $rendered[$name] = $child->render();
-    }
-
-    return $rendered;
   }
 
 }

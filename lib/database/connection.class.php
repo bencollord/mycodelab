@@ -4,7 +4,7 @@ namespace Lib\Database;
 
 use \PDO;
 use \PDOStatement;
-use Lib\Core\Object;
+use Lib\System\Object;
 
 /**
  * Represents a database connection.

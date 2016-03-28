@@ -13,12 +13,10 @@ use Lib\View\Grid\GridView;
 //
 //$grid->bind($posts, $columns);
 
-$params = ['one', 'two', 'red', 'blue'];
+$arr = [];
+$count = count($arr);
 
-foreach ($params as $p) {
-  $p .= ' fish';
-}
-
-foreach ($params as $p) {
-  echo $p . '<br />';
+for ($i = 0; $i < $count; ++$i) {
+  $arr[$i] = $arr[$i] * 3;
+  echo $arr[$i];
 }

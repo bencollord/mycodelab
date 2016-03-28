@@ -2,7 +2,7 @@
 
 namespace Form;
 
-use Lib\Core\Accessors;
+use Lib\Foundation\Accessors;
 
 /**
  * Represents a form input

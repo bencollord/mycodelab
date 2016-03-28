@@ -1,6 +1,6 @@
 <?php
 
-namespace Lib\Core;
+namespace Lib\System;
 
 abstract class Object
 {

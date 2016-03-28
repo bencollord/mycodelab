@@ -2,7 +2,7 @@
 
 namespace Lib\Authentication;
 
-use Lib\Core\{Object, Request, Session};
+use Lib\Foundation\{Object, Request, Session};
 
 /**
  * Manages and tracks user logins and access privileges.

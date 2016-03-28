@@ -2,7 +2,7 @@
 
 namespace Lib\Database;
 
-use Lib\Core\Object;
+use Lib\System\Object;
 
 /**
  * Represents a SQL command that affects database data.

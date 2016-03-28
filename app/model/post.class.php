@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-use Lib\Core\Object;
+use Lib\System\Object;
 use Lib\Domain\Entity;
 
 class Post extends Object implements Entity

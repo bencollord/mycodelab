@@ -2,7 +2,7 @@
 
 namespace Lib\View\Grid;
 
-use Lib\Core\Object;
+use Lib\System\Object;
 
 class GridColumn extends Object
 {  

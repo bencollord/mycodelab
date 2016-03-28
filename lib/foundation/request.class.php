@@ -1,23 +1,23 @@
 <?php
 
-namespace Lib\Core;
+namespace Lib\Foundation;
 
 //@todo: full support for COOKIES, SERVER, and FILES parameters
 
 class Request extends Object
 {
   /**
-   * @var array[string]string - HTTP headers
+   * @var string[string]  HTTP headers
    */
   protected $headers;
 
   /**
-   * @var string - HTTP request method
+   * @var string  HTTP request method
    */
   protected $method;
 
   /**
-   * @var string - Request MIME type
+   * @var string  Request MIME type
    */
   protected $contentType;
 
@@ -25,29 +25,34 @@ class Request extends Object
    * @var string
    */
   protected $uri;
+  
+  /**
+   * @var Session
+   */
+  protected $session;
 
   /**
-   * @var mixed[]|mixed - Query string (GET) parameters
+   * @var mixed[]|mixed  Query string (GET) parameters
    */
   protected $query = array();
 
   /**
-   * @var mixed[]|mixed - Request body (POST) parameters
+   * @var mixed[]|mixed  Request body (POST) parameters
    */
   protected $body = array();
 
   /**
-   * @var mixed[]|mixed - SERVER parameters
+   * @var mixed[]|mixed  SERVER parameters
    */
   protected $server = array();
 
   /**
-   * @var string[]|string - COOKIES parameters
+   * @var string[]|string  COOKIES parameters
    */
   protected $cookies = array();
 
   /**
-   * @var resource[]|resource - FILES parameters
+   * @var resource[]|resource  FILES parameters
    */
   protected $files = array();
 
@@ -91,7 +96,7 @@ class Request extends Object
   /**
    * Getter method for $method
    * 
-   * @return string - The HTTP request method
+   * @return string  The HTTP request method
    */
   public function getMethod() 
   {
@@ -115,8 +120,8 @@ class Request extends Object
   /**
    * Getter method for $query
    * 
-   * @param  string $key - Optional key for specific var.
-   * @return mixed|array - Returns the value stored at $key, or the whole array
+   * @param  string $key  Optional key for specific var.
+   * @return mixed|array  Returns the value stored at $key, or the whole array
    *                       if none is defined.
    */
   public function getQuery($key = null) 
@@ -131,8 +136,8 @@ class Request extends Object
   /**
    * Getter method for $body
    * 
-   * @param  string $key   - Optional key for specific var.
-   * @return mixed[]|mixed - Returns the value stored at $key, or the whole 
+   * @param  string $key    Optional key for specific var.
+   * @return mixed[]|mixed  Returns the value stored at $key, or the whole 
    *                         array if none is defined.
    */
   public function getBody($key = null)
@@ -147,8 +152,8 @@ class Request extends Object
   /**
    * Getter method for $server
    * 
-   * @param  string $key   - Optional key for specific var.
-   * @return mixed[]|mixed - Returns the value stored at $key, or the whole 
+   * @param  string $key    Optional key for specific var.
+   * @return mixed[]|mixed  Returns the value stored at $key, or the whole 
    *                         array if none is defined.
    */
   public function getServer($key = null)
@@ -163,8 +168,8 @@ class Request extends Object
   /**
    * Getter method for $cookies
    * 
-   * @param  string $key     - Optional key for specific var.
-   * @return string[]|string - Returns the value stored at $key, or the whole 
+   * @param  string $key      Optional key for specific var.
+   * @return string[]|string  Returns the value stored at $key, or the whole 
    *                           array if none is defined.
    */
   public function getCookies($key = null)
@@ -179,8 +184,8 @@ class Request extends Object
   /**
    * Getter method for $files
    * 
-   * @param  string $key         - Optional key for specific var.
-   * @return resource[]|resource - Returns the value stored at $key, or the 
+   * @param  string $key          Optional key for specific var.
+   * @return resource[]|resource  Returns the value stored at $key, or the 
    *                               whole array if none is defined.
    */
   public function getFiles($key = null)

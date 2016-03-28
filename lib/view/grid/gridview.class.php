@@ -2,7 +2,7 @@
 
 namespace Lib\View\Grid;
 
-use Lib\Core\Object;
+use Lib\System\Object;
 use \ArrayObject;
 
 class GridView extends Object implements Renderable
