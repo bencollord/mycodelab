@@ -1,8 +1,6 @@
 <?php
 
-namespace Lib\HTTP;
-
-use Lib\Core\Object;
+namespace Lib\Core;
 
 //@todo: full support for COOKIES, SERVER, and FILES parameters
 

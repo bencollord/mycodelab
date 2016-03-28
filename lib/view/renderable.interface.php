@@ -3,9 +3,9 @@
 namespace Lib\View;
 
 /**
- * Objects that can act as the application display
+ * Objects that can be rendered into an output string
  */
-interface View
+interface Renderable
 {
   /**
    * Compiles the view into a string for output

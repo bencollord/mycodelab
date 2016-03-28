@@ -2,12 +2,14 @@
 
 namespace Form;
 
+use Lib\Core\Accessors;
+
 /**
  * Represents a form input
  */
 class Field
 {
-  use Properties;
+  use Accessors;
   
   protected $name;
   protected $inputType;

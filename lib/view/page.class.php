@@ -4,21 +4,12 @@ namespace Lib\View;
 
 use Lib\Core\Object;
 
-class HtmlDocument extends Object implements View
+class Page extends View implements Renderable
 {
   protected $title;
-  protected $template;
-  protected $blocks      = array();
   protected $metaTags    = array();
   protected $stylesheets = array();
   protected $scripts     = array();
-  
-  public function __construct($template, $stylesheets = array(), $scripts = array())
-  {
-    $this->template     = $template;
-    $this->stylesheets  = $stylesheets;
-    $this->scripts      = $scripts;
-  }
 
   /**
    * @return string $this->title
@@ -40,10 +31,11 @@ class HtmlDocument extends Object implements View
   }
   
   /**
-   * [[Description]]
+   * Registers a meta tag.
+   * 
    * @return $this
    */
-  public function addMeta($name, $value) 
+  public function addMetaTag($name, $value) 
   { 
     // @todo: method body
     
@@ -51,7 +43,8 @@ class HtmlDocument extends Object implements View
   }
   
   /**
-   * [[Description]]
+   * Registers a CSS file.
+   * 
    * @return $this
    */
   public function addStylesheet($path, $handle = null) 
@@ -62,7 +55,8 @@ class HtmlDocument extends Object implements View
   }
   
   /**
-   * [[Description]]
+   * Registers a JavaScript file.
+   * 
    * @return $this
    */
   public function addScript($path, $handle = null) 
@@ -72,14 +66,4 @@ class HtmlDocument extends Object implements View
     return $this; 
   }
   
-  
-
-  public function render()
-  {
-    extract($this->blocks);
-    ob_start();
-    include $this->template;
-    return ob_get_clean();
-  }
-
 }

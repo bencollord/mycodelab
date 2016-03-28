@@ -2,6 +2,8 @@
 
 namespace Lib\Database;
 
+use \PDO;
+use \PDOStatement;
 use Lib\Core\Object;
 
 /**
@@ -43,6 +45,7 @@ class Connection extends Object
     {
       $pdo = new PDO("$driver:host=$host;dbname=$dbName", $username, $password);
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, $fetchMode);
     } 
     catch (PDOException $e) 
     {
@@ -51,38 +54,33 @@ class Connection extends Object
     return new self($pdo, $fetchMode);
   }
   
-  public function select($table, $fields = array(), $where = '', $orderBy = '')
+  /**
+   * Prepares a SqlCommand object for execution.
+   * 
+   * Acts as a proxy method for PDO::prepare() to provide 
+   * SqlCommand class access to the PDOStatement object.
+   * 
+   * @param SqlCommand $command  The command to be prepared.
+   * @return PDOStatement
+   */
+  public function prepare(SqlCommand $command)
   {
-    $columns    = (!empty($fields))  ? implode(', ', $fields)  : '*';
-    $condition  = (!empty($where))   ? implode(', ', $where)   : '';
-    $order      = (!empty($orderBy)) ? implode(', ', $orderBy) : '';
-    
-    $query = "SELECT $columns FROM $table";
-    
-    if (!empty($condition)) {
-      $query .= " WHERE $condition";
-    }
-    if (!empty($order)) {
-      $query .= " ORDERBY $order";
-    }
-    
-    $stmt = $this->pdo->query($query);
+    return $this->pdo->prepare($command);
   }
   
-  public function insert($table, array $data)
+  public function query($sql, $parameters = array())
   {
-    $command = new SqlInsertCommand()
+    if (!empty($parameters)) {
+      $statement = $this->pdo->prepare($sql);
+      
+      foreach ($parameters as $key => $value) {
+        $statement->bindValue(":$key", $value);
+      }
+    } else {
+      $statement = $this->pdo->query($sql);
+    }
     
-  }
-    
-  public function update($table, array $data, $conditions)
-  {
-    
-  }
-    
-  public function delete($table, $conditions)
-  {
-    
+    return $statement->fetchAll($this->fetchMode);
   }
   
 }

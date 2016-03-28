@@ -1,72 +1,140 @@
-<?php 
+<?php
 
 namespace Lib\Core;
 
-class Object
-{  
+abstract class Object
+{
   /**
-   * Generic object constructor to imitate JavaScript's object literals
+   * Looks for a getter method and invokes it if found.
    * 
-   * @param mixed[] $args  An associative array of properties and methods
+   * @throws Exception
    */
-  public static function createGeneric($args = array())
+  public function __get($property)
   {
-    $object = new self();
+    $accessor = 'get' . ucwords($property);
     
-    if (!empty($args)) {
-      foreach ($args as $property => $value) {
-        $object->{$property} = $value;
-      }
-    }
-    
-    return $object;
-  }
-  
-  /**
-   * Calls a getter method if one exists when a private property is accessed.
-   */
-  public function __get($name)
-  {
-    if (method_exists($this, 'get'.ucfirst($name))) {
-      return $this->{'get'.ucfirst($name)}();
+    if (method_exists($this, $accessor)) {
+      return $this->$accessor();
     } 
-    if (method_exists($this, 'is'.ucfirst($name))) {
-      return $this->{'is'.ucfirst($name)}();
-    }
-    throw new Exception('Could not get property "'.$name.'"');
+    
+    throw new Exception('Could not get property "' . $property . '"');
   }
 
   /**
-   * Calls a setter method if one exists when a private property is accessed.
+   * Looks for a setter method and invokes it if found.
+   * 
+   * @throws Exception
    */
-  public function __set($name, $value)
+  public function __set($property, $value)
   {
-    if (method_exists($this, 'set'.ucfirst($name))) {
-      return $this->{'set'.ucfirst($name)}($value);
+    $accessor = 'set' . ucwords($property);
+    
+    if (method_exists($this, $accessor)) {
+      return $this->$accessor($value);
     }
-    throw new Exception('Could not set property "'.$name.'"');
-  }
-
-  /**
-   * Finds and invokes methods defined via the generic object constructor.
-   */
-  public function __call($method, $args)
-  {
-    if (isset($this->{$method}) && is_callable($this->{$method})) {
-      return call_user_func_array($this->{$method}, $args);
-    } else {
-      throw new Exception("Fatal error: Call to undefined method stdObject::{$method}()");
-    }
+    
+    throw new Exception('Could not set property "' . $property . '"');
   }
   
   /**
-   * Returns the class name
-   * 
-   * @return string
+   * Routes isset() calls through accessor methods.
    */
-  public function getClass()
+  public function __isset($property) 
+  {
+    $accessor = 'get' . ucfirst($property);
+    
+    if (method_exists($this, $accessor) && $this->$accessor() !== null) {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  /**
+   * Routes unset() calls through accessor methods.
+   * 
+   * @throws Exception
+   */
+  public function __unset($property) 
+  {
+    $accessor = 'set' . ucfirst($property);
+    
+    if (method_exists($this, $accessor)) {
+      $this->$accessor(null);
+    }
+    
+    throw new Exception("Cannot unset property '$property.'");
+  }
+  
+  /**
+   * String representation of the object.
+   */
+  public function __toString() 
+  {
+    return $this->getClassName();
+  }
+  
+  final public function className()
   {
     return static::class;
   }
   
+  /**
+   * Checks if a property has been defined. 
+   * 
+   * Looks for accessors rather than fields. Thus, it will return false for a 
+   * class variable with no getter or setter and true for a virtual property.
+   * 
+   * @param  string $property
+   * @return bool 
+   */
+  final public function hasProperty(string $property) : bool
+  {
+    if (method_exists($this, 'get' . ucwords($property))) {
+      return true;
+    } 
+    if (method_exists($this, 'set' . ucwords($property))) {
+      return true;
+    }
+    
+    return false;
+  }
+  
+  /**
+   * Checks if a property has a getter method.
+   * 
+   * @param  string $property
+   * @return bool 
+   */
+  final public function canReadProperty(string $property) : bool
+  {
+    $accessor = 'get' . ucwords($property);
+    
+    return method_exists($this, $accessor);
+  }
+  
+  /**
+   * Checks if a property has a setter method;
+   * 
+   * @param  string $property 
+   * @return bool
+   */
+  final public function canWriteProperty(string $property) : bool
+  {
+    $accessor = 'set' . ucwords($property);
+    
+    return method_exists($this, $accessor);
+  }
+  
+  /**
+   * Checks if a method has been defined.
+   * 
+   * @param  string $method 
+   * @return bool
+   */
+  final public function hasMethod(string $method) : bool
+  {
+    return method_exists($this, $method);
+  }
+
 }

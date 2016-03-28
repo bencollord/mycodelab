@@ -1,8 +1,6 @@
 <?php
 
-namespace Lib\HTTP;
-
-use Lib\Core\Object;
+namespace Lib\Core;
 
 class Session extends Object
 {
@@ -58,6 +56,8 @@ class Session extends Object
   public function setKey($key, $value)
   {
     $_SESSION[$key] = $value;
+    
+    return $this;
   }
 
 }

@@ -2,20 +2,17 @@
 
 namespace Lib\Core;
 
-use Lib\Core\Object;
-
-class Autoloader extends Object
+class Autoloader
 {
   public static function register() 
   {
-    spl_autoload_register("$this->loadClass");
-    spl_autoload_register("$this->loadInterface");
+    spl_autoload_register('static::load');
   }
 
-  private static function load($class) 
+  public static function load($class) 
   {
     $class    = strtolower($class);
-    $filename = LIB_PATH . str_replace('\\', DS, $class);
+    $filename = ROOT . str_replace('\\', DS, $class);
     
     if (file_exists($filename . '.class.php')) {
       require_once $filename . '.class.php';

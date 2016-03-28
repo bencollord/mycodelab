@@ -1,10 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Controller;
 
-use Lib\Core\Object;
-
-class UsersController extends Controller
+class UsersController
 {
   private $currentUser;
 

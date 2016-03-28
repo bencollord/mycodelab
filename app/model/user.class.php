@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Model;
 
 use Lib\Core\Object;
 
 class User extends Object
-{
+{  
   protected $id;
   protected $username;
   protected $password;

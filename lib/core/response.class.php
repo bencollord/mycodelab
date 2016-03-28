@@ -1,15 +1,13 @@
 <?php
 
-namespace Lib\HTTP;
-
-use Lib\Core\Object;
+namespace Lib\Core;
 
 class Response extends Object
 {
   /**
    * @var string[]
    */
-  private $statusCodes = array(
+  const STATUS_CODES = [
     100 =>  'Continue',
     101 =>  'Switching Protocols',
     200 =>  'OK',
@@ -50,7 +48,7 @@ class Response extends Object
     503 =>  'Service Unavailable',
     504 =>  'Gateway Time-out',
     505 =>  'HTTP Version not supported'
-  );
+  ];
 
   /**
    * @var string[]
@@ -84,7 +82,10 @@ class Response extends Object
       $header    = array_shift($fragments);
       $value     = implode(':', $fragments);
     }
+    
     $this->headers[$header] = $value;
+    
+    return $this;
   }
 
   /**
@@ -95,6 +96,8 @@ class Response extends Object
   public function write($input) 
   {
     $this->body .= (string) $input;
+    
+    return $this;
   }
 
   public function send()

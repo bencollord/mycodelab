@@ -1,8 +1,6 @@
 <?php
 
-namespace Lib\HTTP;
-
-use Lib\Core\Object;
+namespace Lib\Core;
 
 /**
  * Processes HTTP requests.
@@ -10,12 +8,12 @@ use Lib\Core\Object;
 class Kernel extends Object
 {
   /**
-   * @var Session
+   * @var Request
    */
-  protected $session;
-
+  protected $request;
+  
   /**
-   * @var boolean
+   * @var bool
    */
   protected $initialized = false;
 
@@ -38,12 +36,15 @@ class Kernel extends Object
 
   /**
    * Bootstraps the application
+   * 
+   * @return $this
    */
   public function init()
   {
-    $this->request      = Request::forge();
-    $this->session      = new Session();
-    $this->initialized  = true;
+    $this->request     = Request::forge();
+    $this->initialized = true;
+    
+    return $this;
   }
   
   /**
@@ -58,19 +59,18 @@ class Kernel extends Object
 
   public function run()
   {
-    $this->session->start();
-    //@todo: add default controller and action handling
-    $uri = trim($this->request->getUri(), '/');
+    $route = (isset($this->request->uri)) ? trim($this->request->uri, '/') : DEFAULT_ROUTE;
 
-    $params     = explode('/', $url);
-    $controller = ucwords(array_shift($fragments)) . 'Controller';
-    $action     = array_shift($fragments);
+    $params     = explode('/', $route);
+    $controller = ucwords(array_shift($params)) . 'Controller';
+    $action     = array_shift($params);
 
     if(!class_exists($controller) || !method_exists($controller, $action)) {
       //todo: handle 404s
       throw new InvalidArgumentException('The controller or action requested does not exist.');
     }
-    $controller = new $controller($this->request, $this->session);
+    $controller = new $controller($this->request);
+    
     $controller->{$action}();
   }
 

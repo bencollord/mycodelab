@@ -2,9 +2,7 @@
 
 namespace Lib\Authentication;
 
-use Lib\Core\Object;
-use Lib\HTTP\Session;
-use Lib\HTTP\Request;
+use Lib\Core\{Object, Request, Session};
 
 /**
  * Manages and tracks user logins and access privileges.
