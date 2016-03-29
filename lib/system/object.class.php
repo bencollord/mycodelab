@@ -136,5 +136,52 @@ abstract class Object
   {
     return method_exists($this, $method);
   }
+  
+  final public function readableFields()
+  {
+    $readable   = array();
+    $reflection = new ReflectionClass($this);
+    $properties = $reflection->getProperties();
+    
+    // Search for public properties or getter methods
+    foreach ($properties as $property) {
+      if ($property->isPublic() || method_exists('get' . ucfirst($property->name))) {
+        $readable[] = $property->name;
+      }
+    }
+    
+    if (empty($readable)) {
+      return false;
+    }
+    
+    return $readable;
+  }
+  
+  final public function writeableFields()
+  {
+    $writeable  = array();
+    $reflection = new ReflectionClass($this);
+    $properties = $reflection->getProperties();
+    
+    // Search for public properties or getter methods
+    foreach ($properties as $property) {
+      if ($property->isPublic() || method_exists('set' . ucfirst($property->name))) {
+        $writeable[] = $property->name;
+      }
+    }
+    
+    if (empty($writeable)) {
+      return false;
+    }
+    
+    return $writeable;
+  }
 
 }
+
+
+
+
+
+
+

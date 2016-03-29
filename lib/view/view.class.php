@@ -14,7 +14,7 @@ class View extends Object implements Renderable
   //
   // HTML escape levels
   // 
-
+  
   /**
    * No escaping
    */
@@ -97,7 +97,7 @@ class View extends Object implements Renderable
     } elseif ($mode === 2 || $mode == 'strict') {
       $this->escapeMode = static::ENCODE_STRICT;
     } else {
-      throw new InvalidArgumentException("Invalid value set for View::escapeMode.");
+      throw new InvalidArgumentException("Invalid value set for ViewDataSet::escapeMode.");
     }
 
     return $this;
