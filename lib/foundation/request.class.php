@@ -2,7 +2,8 @@
 
 namespace Lib\Foundation;
 
-//@todo: full support for COOKIES, SERVER, and FILES parameters
+// @todo: full support for COOKIES, SERVER, and FILES parameters
+// @todo: unify the getter api with the current getter/setter scheme (array issue);
 
 class Request extends Object
 {
@@ -25,11 +26,6 @@ class Request extends Object
    * @var string
    */
   protected $uri;
-  
-  /**
-   * @var Session
-   */
-  protected $session;
 
   /**
    * @var mixed[]|mixed  Query string (GET) parameters
@@ -39,7 +35,7 @@ class Request extends Object
   /**
    * @var mixed[]|mixed  Request body (POST) parameters
    */
-  protected $body = array();
+  protected $post = array();
 
   /**
    * @var mixed[]|mixed  SERVER parameters
@@ -63,7 +59,7 @@ class Request extends Object
     $this->contentType  = isset($params['contentType']) ? $params['contentType'] : null;
     $this->uri          = isset($params['uri']        ) ? $params['uri']         : null;
     $this->query        = isset($params['query']      ) ? $params['query']       : null;
-    $this->body         = isset($params['body']       ) ? $params['body']        : null;
+    $this->post         = isset($params['body']       ) ? $params['body']        : null;
     $this->server       = isset($params['server']     ) ? $params['server']      : null;
     $this->cookies      = isset($params['cookies']    ) ? $params['cookies']     : null;
     $this->files        = isset($params['files']      ) ? $params['files']       : null;
@@ -134,18 +130,18 @@ class Request extends Object
   }
 
   /**
-   * Getter method for $body
+   * Getter method for $post
    * 
    * @param  string $key    Optional key for specific var.
    * @return mixed[]|mixed  Returns the value stored at $key, or the whole 
    *                         array if none is defined.
    */
-  public function getBody($key = null)
+  public function getPost($key = null)
   {
     if($key != null) {
-      return $this->body[$key];
+      return $this->post[$key];
     } else {
-      return $this->body;
+      return $this->post;
     }
   }
 

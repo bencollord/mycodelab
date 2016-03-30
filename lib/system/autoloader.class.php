@@ -16,13 +16,13 @@ class Autoloader
     
     if (file_exists($filename . '.class.php')) {
       require_once $filename . '.class.php';
-    } elseif (file_exists($filename . '.interface.php')) {
-      require_once $filename . '.interface.php';
-    } elseif (file_exists($filename . '.trait.php')) {
-      require_once $filename . '.trait.php';
-    } else {
-      return false;
     }
+    if (file_exists($filename . '.interface.php')) {
+      require_once $filename . '.interface.php';
+    } 
+    if (file_exists($filename . '.trait.php')) {
+      require_once $filename . '.trait.php';
+    } 
   }
 
 }

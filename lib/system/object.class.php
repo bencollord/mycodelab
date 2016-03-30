@@ -2,6 +2,9 @@
 
 namespace Lib\System;
 
+use \ReflectionClass;
+use \ReflectionObject;
+
 abstract class Object
 {
   /**
@@ -135,6 +138,11 @@ abstract class Object
   final public function hasMethod(string $method) : bool
   {
     return method_exists($this, $method);
+  }
+  
+  final public function getReflection($this)
+  {
+    return new ReflectionObject($this);
   }
   
   final public function readableFields()

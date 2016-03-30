@@ -62,7 +62,7 @@ class Kernel extends Object
     $route = (isset($this->request->uri)) ? trim($this->request->uri, '/') : DEFAULT_ROUTE;
 
     $params     = explode('/', $route);
-    $controller = ucwords(array_shift($params)) . 'Controller';
+    $controller = 'App\Controller' . ucwords(array_shift($params)) . 'Controller';
     $action     = array_shift($params);
 
     if(!class_exists($controller) || !method_exists($controller, $action)) {

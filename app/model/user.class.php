@@ -3,61 +3,50 @@
 namespace App\Model;
 
 use Lib\System\Object;
+use Lib\Database\SqlCommand;
 
 class User extends Object
 {  
   protected $id;
   protected $username;
   protected $password;
-  protected $isLoggedIn;
-  protected $gateway;
+  protected $loggedIn;
 
-  public function __construct($username, $password)
+  
+  public static function find($username)
   {
-    $this->gateway  = new UserDataGateway();
-    $this->username = $username;
-    $this->password = $password;
-  }
-
-  //checks to see if user is registered in database
-  private function userExists()
-  {
-    $stmt = $this->dbConn->prepare("SELECT * FROM registeruserstbl WHERE username=:username");
-    $stmt->bindParam(':username', $this->username);
-    $stmt->execute();
-
-    $resultSet = $stmt->fetchAll();
+    $result = (new SqlCommand())->write(
+      "SELECT * FROM registeruserstbl WHERE username=:username",
+      ['username' => $username]
+    )->executeQuery();
 
     if(empty($resultSet)) {
       return false;
-    } elseif(count($resultSet) == 1) {
-      return $resultSet[0];
-    } else {
-      throw new Exception("Number of users with username cannot be more than 1.");
     }
+    
+    return new self($result['id'], $result['username'], $result['password']);
   }
 
+  public function __construct($id = null, $username = null, $password = null)
+  {
+    $this->id       = $id;
+    $this->username = $username;
+    $this->password = $password;
+  }
+  
   public function getUsername() 
   {
     return $this->username;
   }
 
-  public function authenticate() 
+  public function login() 
   {
-    $result = $this->userExists();
-    if (!empty($result))
-    {
-      if (($this->username == $result['username']) && ($this->password == $result['password']))
-      {
-        return true;
-      } else {
-        $this->message = "Incorrect password!";
-        return false;
-      }
-    } else {
-      $this->message = "Username not found!";
-      return false;
-    }
+    
+  }
+  
+  public function logout() 
+  {
+    
   }
 
   public function register() 

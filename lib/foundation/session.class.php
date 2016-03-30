@@ -4,13 +4,20 @@ namespace Lib\Foundation;
 
 class Session extends Object
 {
-  private $status;
-  private $activeUser;
+  /**
+   * @var bool
+   */
+  protected $active;
+  
+  /**
+   * @var bool
+   */
+  protected $signed;
 
   public function start() 
   {
     if(session_start()) {
-      $this->status = true;
+      $this->active = true;
       if(isset($_SESSION['user'])) {
         $this->signed = true;
       }
@@ -22,7 +29,7 @@ class Session extends Object
 
   public function end() 
   {
-    if(!$this->status) 
+    if(!$this->active) 
     {
       session_start();
     }
@@ -33,7 +40,7 @@ class Session extends Object
 
   public function isSigned()
   {
-    return $this->isSigned();
+    return $this->signed;
   }
 
   public function keyExists($key)

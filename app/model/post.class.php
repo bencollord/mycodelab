@@ -60,11 +60,15 @@ class Post extends Object implements Entity
    * @param string $field  The property you want to search by.
    * @param mixed  $value  The criteria to match.
    *                                       
-   * @return Post
+   * @return Post|false
    */
   public static function load($id)
   {
     $result = (new PostDataGateway)->select('id', $id);
+    
+    if (empty($result)) {
+      return false; 
+    }
 
     foreach (static::COLUMN_MAP as $property => $column) {
       $post->$property = $result[$column];
@@ -74,7 +78,7 @@ class Post extends Object implements Entity
   }
 
   /**                                     
-   * @return Post[]
+   * @return Post[]|false
    */
   public static function loadAll($filter = null) 
   {
@@ -88,6 +92,10 @@ class Post extends Object implements Entity
       default: 
         $result = $gateway->select();
     }
+    
+    if (empty($result)) { 
+      return false; 
+    }
 
     foreach ($result as $row) {
       $post = new Post();
@@ -100,6 +108,11 @@ class Post extends Object implements Entity
     }
 
     return $posts;
+  }
+  
+  public function __construct()
+  {
+    $this->gateway = new PostDataGateway();
   }
 
   //

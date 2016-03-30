@@ -61,17 +61,6 @@ class SqlCommand extends Object
     
     return $this;
   }
-  
-  protected function bind()
-  {
-    $statement = $this->connection->prepare($this);
-    
-    foreach ($this->parameters as $key => $value) {
-      $statement->bindParam(":$key", $value);
-    }
-   
-    return $statement;
-  }
 
   public function execute()
   {
@@ -89,10 +78,20 @@ class SqlCommand extends Object
     return $statement->fetchAll();
   }
   
-
   public function __toString()
   {
     return $this->sql;
+  }
+  
+  protected function bind()
+  {
+    $statement = $this->connection->prepare($this);
+    
+    foreach ($this->parameters as $key => $value) {
+      $statement->bindParam(":$key", $value);
+    }
+   
+    return $statement;
   }
 
 }
