@@ -3,6 +3,8 @@
 // Folder paths
 // =============================================================================
 
+define('DOMAIN_NAME', 'localhost');
+
 define('DS', DIRECTORY_SEPARATOR);
 
 define('ROOT',       dirname(__FILE__) . DS);

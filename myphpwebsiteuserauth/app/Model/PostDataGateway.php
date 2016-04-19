@@ -2,8 +2,8 @@
 
 namespace App\Model;
 
-use Library\System\Object;
-use Library\Database\{Connection, SqlCommand};
+use Lib\System\Object;
+use Lib\Database\Connection;
 
 class PostDataGateway extends Object
 {
@@ -13,7 +13,7 @@ class PostDataGateway extends Object
   const TABLE = 'listtbl';
 
   /**
-   * @var Connection
+   * @var Lib\Database\Connection
    */
   protected $connection;
 
@@ -23,44 +23,56 @@ class PostDataGateway extends Object
   }
 
   /**
-   * Get data from all posts in the table
+   * Get data from all posts in the table.
    * 
-   * @return array[] - All returned rows as associative arrays
+   * @return Lib\Database\Result
    */
   public function select($column = null, $value = null) 
   {
-    $sql      = "SELECT * FROM " . static::TABLE;
-    $command  = new SqlCommand();
+    $sql      = "SELECT * FROM " . self::TABLE;
+    $command  = $this->connection->sqlCommand();
     
     $command->write($sql);
     
     if ($column && $value) {
-      $command->append("WHERE $column=:$column", [$column => $value]);
+      $command->write("WHERE $column=:$column", [$column => $value]);
     }
     
-    $rows = $command->executeQuery();
+    $result = $command->execute();
 
-    return $rows;
+    return $result;
   }
 
   public function insert($postData)
   {
-    $sql    = "INSERT INTO " . static::TABLE . "details, date_posted, time_posted, date_edited, time_edited, public)" . 
-              "VALUES (:details, :date_posted, :time_posted, :public)";
-    $params = [
+    $command = $this->connection->sqlCommand();
+    
+    $sql     = "INSERT INTO " . self::TABLE . "(details, date_posted, time_posted, date_edited, time_edited, public)" . 
+               "VALUES (:details, :date_posted, :time_posted, :public)";
+    
+    $params  = [
       'details'     => $postData['details'],
       'time_posted' => $postData['postTime'],
       'date_posted' => $postData['postDate'],
       'public'      => $postData['isPublic']
     ]
 
-      (new SqlCommand())->write($sql, $params)->execute();
+    $result = $command->write($sql, $params)->execute();
+    
+    if ($result->affectedRows() == 0) {
+      throw new RuntimeException("Post could not be saved to database");
+    }
   }
 
   public function update($postData) 
   {
-    $sql    = "UPDATE" . static::TABLE . " SET details=:details, date_edited=:date, time_edited=:time, public=:public WHERE id=:id";
-    $params = [
+    $command = $this->connection->sqlCommand();
+    
+    $sql     = "UPDATE" . self::TABLE . " " .
+               "SET details=:details, date_edited=:date, time_edited=:time, public=:public " .
+               "WHERE id=:id";
+    
+    $params   = [
       'id'      => $postData['id'],
       'details' => $postData['details'],
       'date'    => $postData['editDate'],
@@ -68,14 +80,22 @@ class PostDataGateway extends Object
       'public'  => $postData['isPublic']
     ];
 
-    (new SqlCommand())->write($sql, $params)->execute();
+    $result = $command->write($sql, $params)->execute();
+    
+    if ($result->affectedRows() == 0) {
+      throw new RuntimeException("Post could not be saved to database");
+    }
   }
 
   public function delete($id) 
   {
-    $sql = "DELETE FROM " . static::TABLE  . " WHERE id=:id"; 
+    $sql     = "DELETE FROM " . self::TABLE  . " WHERE id=:id";
+    $command = $this->connection->sqlCommand($sql);
+    $result  = $command->bind(['id' => $id])->execute();
     
-    (new SqlCommand())->write($sql, ['id' => $id])->execute();
+    if ($result->affectedRows() == 0) {
+      throw new RuntimeException("Post could not be deleted from database");
+    }
   }
 
 }

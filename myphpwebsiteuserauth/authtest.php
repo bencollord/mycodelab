@@ -1,9 +1,9 @@
 <?php
 
-use Library\System\Autoloader;
-use Library\Http\{Request, Response, Session};
-use Library\Database\{Connection, SqlCommand};
-use Library\Auth\{User, Result as AuthResult};
+use Lib\System\Autoloader;
+use Lib\Http\{Request, Response, Session};
+use Lib\Database\{Connection, SqlCommand};
+use Lib\Auth\{User, Result as AuthResult};
 
 // Define configuration constants
 require_once 'config.php';
