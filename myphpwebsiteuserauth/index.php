@@ -1,7 +1,7 @@
 <?php
 
-use Library\Foundation\Kernel;
-use Library\System\Autoloader;
+use Lib\Foundation\Kernel;
+use Lib\System\Autoloader;
 
 // Define configuration constants
 require_once 'config.php';

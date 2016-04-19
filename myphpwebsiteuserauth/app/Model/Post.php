@@ -2,25 +2,14 @@
 
 namespace App\Model;
 
-use Library\System\Object;
-use Library\Domain\Entity;
+use DateTime;
+use DomainException;
+use Lib\System\Object;
 
-class Post extends Object implements Entity
+class Post extends Object
 {
-  const TABLE = 'listtbl';
-
-  const COLUMN_MAP = [
-    'id'        => 'id',
-    'details'   => 'details',
-    'postDate'  => 'date_posted',
-    'postTime'  => 'time_posted',
-    'editDate'  => 'date_edited',
-    'editTime'  => 'time_edited',
-    'isPublic'  => 'public'
-  ];
-
   /**
-   * @var int  Post's unique identification key. If empty, indicates a new Post
+   * @var int  Post's unique identification key. If empty, indicates a new Post.
    */
   protected $id;
 
@@ -30,22 +19,12 @@ class Post extends Object implements Entity
   protected $details;
 
   /**
-   * @var string  Date post was created
-   */
-  protected $postDate;
-
-  /**
-   * @var string  Time post was created
+   * @var \DateTime  Timestamp of post creation
    */
   protected $postTime;
 
   /**
-   * @var string  Date of last edit
-   */
-  protected $editDate;
-
-  /**
-   * @var string  Time of last edit
+   * @var \DateTime  Timestamp of last edit
    */
   protected $editTime;
 
@@ -64,15 +43,19 @@ class Post extends Object implements Entity
    */
   public static function load($id)
   {
-    $result = (new PostDataGateway)->select('id', $id);
-    
-    if (empty($result)) {
+    $result = (new PostDataGateway())->select('id', $id);
+
+    if ($result->isEmpty()) {
       return false; 
     }
 
-    foreach (static::COLUMN_MAP as $property => $column) {
-      $post->$property = $result[$column];
-    }
+    $post = new Post();
+    
+    $post->id       = $result['id'];
+    $post->details  = $result['details'];
+    $post->postTime = new DateTime($result['date_posted'] . ' ' . $result['time_posted']);
+    $post->editTime = new DateTime($result['date_edited'] . ' ' . $result['time_edited']);
+    $post->isPublic = $result['public'];
 
     return $post;
   }
@@ -92,7 +75,7 @@ class Post extends Object implements Entity
       default: 
         $result = $gateway->select();
     }
-    
+
     if (empty($result)) { 
       return false; 
     }
@@ -100,16 +83,18 @@ class Post extends Object implements Entity
     foreach ($result as $row) {
       $post = new Post();
 
-      foreach (static::COLUMN_MAP as $property => $column) {
-        $post->$property = $row[$column];
-      }
+      $post->id       = $result['id'];
+      $post->details  = $result['details'];
+      $post->postTime = new DateTime($result['date_posted'] . ' ' . $result['time_posted']);
+      $post->editTime = new DateTime($result['date_edited'] . ' ' . $result['time_edited']);
+      $post->isPublic = $result['public'];
 
       $posts[] = $post;
     }
 
     return $posts;
   }
-  
+
   public function __construct()
   {
     $this->gateway = new PostDataGateway();
@@ -138,25 +123,16 @@ class Post extends Object implements Entity
    */
   public function setDetails($details) 
   { 
-    $time = strftime("%X");
-    $date = strftime("%Y %B %d");
-
-    $this->details  = $details;
-    $this->editTime = $time;
-    $this->editDate = $date;
-
-    // Set original posting time for new posts
-    if (!isset($this->id)) {
-      $this->postTime = $time;
-      $this->postDate = $date;
-    }
+    $this->details = $details;
+    $timestamp     = new DateTime();
     
-    return $this;
-  }
+    $this->editTime = $timestamp;
 
-  public function getPostDate()  
-  {
-    return $this->postDate; 
+    if (!isset($this->postTime)) {
+      $this->postTime = $timestamp;
+    }
+
+    return $this;
   }
 
   public function getPostTime()  
@@ -164,17 +140,12 @@ class Post extends Object implements Entity
     return $this->postTime; 
   }
 
-  public function getEditDate()  
-  {
-    return $this->editDate; 
-  }
-
   public function getEditTime()  
   {
     return $this->editTime; 
   }
 
-  public function getIsPublic()  
+  public function getPublic()  
   {
     return $this->isPublic; 
   }
@@ -185,58 +156,70 @@ class Post extends Object implements Entity
    * 
    * @param bool $value
    *                                          
-   * @throws InvalidArgumentException  If a value other than 'public' or 
-   *                                    'private' is passed. 
+   * @throws InvalidArgumentException                          
    *                                    
    * @return $this
    */
-  public function setIsPublic($value) 
+  public function setPublic($value) 
   { 
     if (!is_bool($value)) {
       throw new InvalidArgumentException('isPublic value must be boolean.');
     }
     
+    $this->isPublic = $value;
+
     return $this;
+  }
+
+  /**
+   * Alias for getPublic
+   * 
+   * @return bool
+   */
+  public function isPublic()  
+  {
+    return $this->isPublic; 
   }
 
   public function toArray()
   {
-    $postData = [
+    $rawData = [
       'id'       => $this->id,
       'details'  => $this->details,
-      'postDate' => $this->postDate,
       'postTime' => $this->postTime,
-      'editDate' => $this->editDate,
       'editTime' => $this->editTime,
       'isPublic' => $this->isPublic
     ];
 
-    return $postData;
+    return $rawData;
   }
 
   public function save()
   {
+    $data = $this->toArray();
+    
+    // Format DateTime into strings for Gateway
+    $data['postTime'] = $this->postTime->format('Y-m-d');
+    $data['postDate'] = $this->postTime->format('H:i:s');
+    $data['editTime'] = $this->editTime->format('Y-m-d');
+    $data['editDate'] = $this->editTime->format('H:i:s');
+    
     // Make sure post is not blank
     if (empty($this->details)) {
-      throw new Exception('Post cannot be blank');
+      throw new DomainException('Post cannot be blank');
     }
 
     // Check if new or existing post
     if (isset($this->id)) {
-      $this->gateway->update($this->toArray());
+      $this->gateway->update($data);
     } else {
-      $this->gateway->add($this->toArray());
+      $this->gateway->insert($data);
     }
   }
 
-  // @throws PDOException  If there is a database error from $gateway
   public function delete() 
   {
-    try {
-      $this->gateway->delete($this->id);
-    } catch (PDOException $e) {
-      throw $e;
-    }
+    $this->gateway->delete($this->id);
   }
 
 }

@@ -2,43 +2,53 @@
 
 namespace App\Controller;
 
-use Library\Auth\{Authentication, Result};
+use Lib\Auth\{Authentication, Result};
 
 class UsersController extends Controller
 {
-  public function init(Authentication $auth)
+  /**
+   * @var Lib\Auth\Authentication
+   */
+  private $auth;
+
+  public function __construct()
   {
-    $this->auth = $auth;
-    
-    $this->session->start();
+    $this->auth = Authentication::forge();
   }
 
   public function login() 
   {
-    $result = $this->auth->run();
+    $username = $this->request->post('username');
+    $password = $this->request->post('password');
 
-    if ($this->auth->status == Result::SUCCESS) {
+    $result = $this->auth->run($username, $password);
+
+    if ($result->isValid()) {
       $this->response->redirect('posts/users');
+    } else {
+      $this->session->write('flash', $result->message);
+      $this->response->redirect('posts/home');
     }
-    if ($this->auth->status == Result::FAIL_NOT_FOUND) {
-      $this->session->write('flash', 'Incorrect username!');
-    }
-    if ($this->auth->status == Result::FAIL_INVALID) {
-      $this->session->write('flash', 'Incorrect password!')
-    }
-
-    $this->response->redirect('posts/home');
   }
 
   public function logout() 
   {
-    $this->auth->close();
+    $this->auth->clear();
     $this->response->redirect('posts/home');
   }
 
   public function register() 
   {
+    $username = $this->request->post('username');
+    $password = $this->request->post('password');
+    $user     = new User($username, $password);
     
+    try {
+      $user->save();
+    } catch (RegistrationException $e) {
+      $this->session->write('flash', $e->getMessage());
+      $this->response->redirect('posts/home');
+    }
   }
 
 }
