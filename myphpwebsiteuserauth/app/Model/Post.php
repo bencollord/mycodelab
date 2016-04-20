@@ -43,7 +43,11 @@ class Post extends Object
    */
   public static function load($id)
   {
+<<<<<<< HEAD
     $result = (new PostDataGateway())->select('id', $id);
+=======
+    $result = (new PostDataGateway)->select('id', $id);
+>>>>>>> 7b9962f61561e6f2ac0b0257351a5ca85b9f24b1
 
     if ($result->isEmpty()) {
       return false; 
@@ -124,6 +128,7 @@ class Post extends Object
   public function setDetails($details) 
   { 
     $this->details = $details;
+<<<<<<< HEAD
     $timestamp     = new DateTime();
     
     $this->editTime = $timestamp;
@@ -135,6 +140,12 @@ class Post extends Object
     return $this;
   }
 
+=======
+
+    return $this;
+  }
+
+>>>>>>> 7b9962f61561e6f2ac0b0257351a5ca85b9f24b1
   public function getPostTime()  
   {
     return $this->postTime; 
@@ -165,8 +176,11 @@ class Post extends Object
     if (!is_bool($value)) {
       throw new InvalidArgumentException('isPublic value must be boolean.');
     }
+<<<<<<< HEAD
     
     $this->isPublic = $value;
+=======
+>>>>>>> 7b9962f61561e6f2ac0b0257351a5ca85b9f24b1
 
     return $this;
   }
@@ -207,13 +221,29 @@ class Post extends Object
     // Make sure post is not blank
     if (empty($this->details)) {
       throw new DomainException('Post cannot be blank');
+<<<<<<< HEAD
+=======
     }
+
+    $time = new DateTime();
+
+    // Set original posting time for new posts
+    if (!isset($this->id)) {
+      $this->postTime = $time;
+>>>>>>> 7b9962f61561e6f2ac0b0257351a5ca85b9f24b1
+    }
+    
+      $this->editTime = $time;
 
     // Check if new or existing post
     if (isset($this->id)) {
       $this->gateway->update($data);
     } else {
+<<<<<<< HEAD
       $this->gateway->insert($data);
+=======
+      $this->gateway->insert($this->toArray());
+>>>>>>> 7b9962f61561e6f2ac0b0257351a5ca85b9f24b1
     }
   }
 

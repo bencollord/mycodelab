@@ -3,7 +3,11 @@
 // Folder paths
 // =============================================================================
 
+<<<<<<< HEAD
 define('DOMAIN_NAME', 'http://localhost');
+=======
+define('DOMAIN_NAME', 'localhost');
+>>>>>>> 7b9962f61561e6f2ac0b0257351a5ca85b9f24b1
 
 define('DS', DIRECTORY_SEPARATOR);
 

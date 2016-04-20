@@ -5,6 +5,7 @@ test.php
 authtest.php
 dimap.php
 
-Validation/
-UI/
-Database/Command/
+myphpwebsiteuserauth/lib/Validation/
+myphpwebsiteuserauth/lib/UI/
+myphpwebsiteuserauth/lib/Database/Command/
+myphpwebsiteuserauth/lib/Foundation/Registry.php

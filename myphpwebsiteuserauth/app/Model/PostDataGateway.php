@@ -29,14 +29,22 @@ class PostDataGateway extends Object
    */
   public function select($column = null, $value = null) 
   {
+<<<<<<< HEAD
     $sql      = "SELECT id, details, date_posted, time_posted, date_edited, time_edited, public " . 
                 "FROM " . self::TABLE;
+=======
+    $sql      = "SELECT * FROM " . self::TABLE;
+>>>>>>> 7b9962f61561e6f2ac0b0257351a5ca85b9f24b1
     $command  = $this->connection->sqlCommand();
     
     $command->write($sql);
     
     if ($column && $value) {
+<<<<<<< HEAD
       $command->write(" WHERE $column=:$column", [$column => $value]);
+=======
+      $command->write("WHERE $column=:$column", [$column => $value]);
+>>>>>>> 7b9962f61561e6f2ac0b0257351a5ca85b9f24b1
     }
     
     $result = $command->execute();
@@ -48,6 +56,7 @@ class PostDataGateway extends Object
   {
     $command = $this->connection->sqlCommand();
     
+<<<<<<< HEAD
     $sql     = "INSERT INTO " . self::TABLE . " (details, date_posted, time_posted, date_edited, time_edited, public) " . 
                "VALUES (:details, :date_posted, :time_posted, :public)";
     
@@ -56,6 +65,16 @@ class PostDataGateway extends Object
       'time'    => $postData['postTime'],
       'date'    => $postData['postDate'],
       'public'  => $postData['isPublic']
+=======
+    $sql     = "INSERT INTO " . self::TABLE . "(details, date_posted, time_posted, date_edited, time_edited, public)" . 
+               "VALUES (:details, :date_posted, :time_posted, :public)";
+    
+    $params  = [
+      'details'     => $postData['details'],
+      'time_posted' => $postData['postTime'],
+      'date_posted' => $postData['postDate'],
+      'public'      => $postData['isPublic']
+>>>>>>> 7b9962f61561e6f2ac0b0257351a5ca85b9f24b1
     ]
 
     $result = $command->write($sql, $params)->execute();
