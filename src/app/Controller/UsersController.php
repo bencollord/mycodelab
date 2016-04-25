@@ -11,9 +11,9 @@ class UsersController extends Controller
    */
   private $auth;
 
-  public function __construct()
+  public function __construct(Authentication $auth)
   {
-    $this->auth = Authentication::forge();
+    $this->auth = $auth;
   }
 
   public function login() 

@@ -69,16 +69,11 @@ class Request extends Object
    * 
    * @return static
    */
-  public static function capture() 
-  {
-    // Make sure query string is empty if no other GET params were sent
-    // @todo: Request probably shouldn't be responsible for creating Url
-    $urlString = (isset($_GET['path'])) ? DOMAIN_NAME . DS . $_GET['path'] : DOMAIN_NAME;
-    $urlString .= $_SERVER['QUERY_STRING'] ?? null;
-    
+  public static function capture(Url $url) 
+  {    
     unset($_GET['path']);
 
-    $params['url']          = new Url($urlString);
+    $params['url']          = $url;
     $params['headers']      = apache_request_headers();
     $params['server']       = $_SERVER; 
     $params['method']       = $_SERVER['REQUEST_METHOD'];
