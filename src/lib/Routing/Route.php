@@ -22,6 +22,11 @@ class Route extends Object
    */
   protected $parameters;
   
+  /**
+   * @param string              $template
+   * @param Closure             $handler
+   * @param ParameterCollection $parameters
+   */
   public function __construct($template, Closure $handler, ParameterCollection $parameters = null)
   {
     $this->template   = $template;
@@ -29,11 +34,17 @@ class Route extends Object
     $this->parameters = $parameters;
   }
   
+  /**
+   * @return string
+   */
   public function getTemplate()
   {
     return $this->template;
   }
   
+  /**
+   * @return MyCodeLab\System\Regex
+   */
   public function getPattern()
   {
     $template = $this->template;

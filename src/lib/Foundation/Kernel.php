@@ -43,31 +43,16 @@ class Kernel extends Object
   }
 
   /**
-   * @param  MyCodeLab\Http\Request  $request
+   * @param  MyCodeLab\Http\Request $request
+   * 
    * @return MyCodeLab\Http\Response
    */
   public function dispatch(Request $request)
   {
-    $route = new Route($request->uri->getPath())
-
-    $controller = $route->controller;
-    $action     = $route->action;
-    $params     = $route->params;
-
-    if(!class_exists($controller) || !method_exists($controller, $action)) {
-      $response = $this->app->load('response');
-      
-      $response->setStatusCode(404);
-      
-      return $response;
-    }
+    $route    = $this->routeMap->match($request->uri->getPath());
+    $response = $route->compile()->execute();
     
-    $controller = new $controller($request, $this->app);
-    
-    $controller->init();
-    $controller->{$action}();
-    
-    return $response = $controller->finish();
+    return $response;
   }
 
 }

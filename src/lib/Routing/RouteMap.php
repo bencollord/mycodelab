@@ -8,7 +8,7 @@ use MyCodeLab\Http\Url;
 class RouteMap extends Object
 { 
   /**
-   * @var RouteFactory
+   * @var MyCodeLab\Routing\Factory
    */
   protected $factory;
   
@@ -18,11 +18,11 @@ class RouteMap extends Object
   protected $routes;
   
   /**
-   * @param RouteFactory $factory
+   * @param MyCodeLab\Routing\Factory $factory
    */
-  public function __construct(RouteFactory $factory = null)
+  public function __construct(Factory $factory = null)
   {
-    $this->factory = $factory ?? new RouteFactory();
+    $this->factory = $factory ?? new Factory();
   }
   
   /**

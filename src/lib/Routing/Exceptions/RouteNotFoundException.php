@@ -1,6 +1,6 @@
 <?php
 
-namespace MyCodeLab\Routing;
+namespace MyCodeLab\Routing\Exceptions;
 
 use MyCodeLab\System\NotFoundException;
 

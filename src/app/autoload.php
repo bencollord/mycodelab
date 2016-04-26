@@ -1,7 +1,7 @@
 <?php
 
 use MyCodeLab\Foundation\Application;
-use MyCodeLab\System\ClassLibrary;
+use MyCodeLab\Dependency\ClassLibrary;
 
 
 require_once '../lib/System/ClassLibrary.php';

@@ -1,6 +1,6 @@
 <?php
 
-namespace MyCodeLab\DI;
+namespace MyCodeLab\Dependency;
 
 use Closure;
 use MyCodeLab\System\Object;

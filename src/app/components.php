@@ -1,84 +1,92 @@
 <?php
 
-use MyCodeLab\View\{View, Page};
-use MyCodeLab\Database\Connection;
-use MyCodeLab\Auth\Authentication;
-use MyCodeLab\Foundation\{Application, Kernel};
-use MyCodeLab\Http\{Request, Response, Session};
+use MyCodeLab\Foundation\{Application, Kernel, Controller};
+use MyCodeLab\Dependency\Registry;
+use MyCodeLab\Http\{Request, Response, Session, Url};
 use MyCodeLab\Routing\{RouteMap, Factory as RouteFactory};
+use MyCodeLab\Database\Connection;
+use MyCodeLab\View\{View, Page};
+use MyCodeLab\Auth\Authentication;
+use MyPhpWebsiteUserAuth\Controller{PostsController, UsersController};
+use MyPhpWebsiteUserAuth\Model\{Post, PostDataGateway};
 
 
-$app = new Application([
-  'root'        => '../' . __DIR__,                       // ROOT
-  'environment' => 'dev',                                 // APP_ENV
-  'domain'      => 'http:localhost/myphpwebsiteuserauth', // DOMAIN_NAME
-  'debug'       => true,                                  // DEBUG
-  'timezone'    => 'America/Boise'                        // TIMEZONE
-]);
+$registry = new Registry();
 
-$app->bind('kernel', function () use ($app) {
-  return new Kernel($app);
+$registry->bind('App', function () { 
+  return new Application([
+    'root'        => '../' . __DIR__,                       // ROOT
+    'environment' => 'dev',                                 // APP_ENV
+    'domain'      => 'http:localhost/myphpwebsiteuserauth', // DOMAIN_NAME
+    'debug'       => true,                                  // DEBUG
+    'timezone'    => 'America/Boise'                        // TIMEZONE
+  ]);
 });
 
-$app->bind('url', function () {
+$registry->bind('Kernel', function () {
+  return new Kernel();
+});
+
+$registry->bind('Url', function () {
   $url  = DOMAIN_NAME . DS;
   $url .= $_GET['path'] ?? null;
   $url .= $_SERVER['QUERY_STRING'] ?? null;
-  
+
   return new Url($url);
 });
 
-$app->bind('request', function () use ($app) {  
+$registry->bind('Request', function () use ($registry) {  
   return Request::capture(
-    $app->load('url')
+    $registry->load('url')
   );
 }, true);
 
-$app->bind('response', function () {
+$registry->bind('Response', function () {
   return new Response();
 }, true);
 
-$app->bind('session', function () {
+$registry->bind('Session', function () {
   return new Session();
 }, true);
 
-// @todo: one of these objects will need a reference to $app
-$app->bind('routeMap', function () {
+// @todo: one of these objects will need a reference to $registry
+$registry->bind('RouteMap', function () {
   return new RouteMap(
     new RouteFactory()
   )
 });
 
-$app->bind('database', function () {
+$registry->bind('Database', function () {
   return new Connection(DB_NAME, DB_USER, DB_PASS, DB_DRIVER, DB_HOST);
 });
 
-$app->bind('auth', function () use ($app) {
-  $session = $app->load('session');
-  return new Authentication($session);
-});
-
-$app->bind('view', function () {
+$registry->bind('View', function () {
   return new View();
 });
 
-$app->bind('page', function () {
+$registry->bind('Page', function () {
   return new Page();
 }, true);
 
-// @todo: find a way to abstract
-$app->bind('postsController', function () {
-  $app->load('request'),
-  $app->load('response'),
-  $app->load('session'),
-  $app->load('auth')
+$registry->bind('Auth', function () use ($registry) {
+  return new Authentication(
+    $registry->load('Request'),
+    $registry->load('Session')
+  );
 });
 
-$app->bind('usersController', function () use ($app) {
-  return new UsersController(
-    $app->load('request'),
-    $app->load('response'),
-    $app->load('session'),
-    $app->load('auth')
-  );
+$registry->bind('Controller', function () use ($registry) {
+  $registry->load('request'),
+  $registry->load('response'),
+  $registry->load('session')
+});
+
+$registry->bind('PostsController', function () {
+  // @todo: extend base Controller somehow
+  $registry->load('auth')
+});
+
+$registry->bind('UsersController', function () {
+  // @todo: extend base Controller somehow
+  $registry->load('auth')
 });
