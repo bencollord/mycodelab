@@ -1,5 +1,5 @@
 <?php
 
-namespace MyCodeLab\System;
+namespace MyCodeLab\System\Exceptions;
 
 class NotFoundException extends \InvalidArgumentException {}

@@ -14,6 +14,10 @@ $routes = [
   '/posts/<id:\d+>/delete' => 'Posts:delete'
 ];
 
+//foreach ($routes as $route => $action) {
+//  $map->register($route, $action);
+//}
+
 $map->register('/test', function () {
   return (new Response())->write('Closure routing works!');
 });

@@ -8,7 +8,7 @@ use MyCodeLab\Http\Url;
 class RouteMap extends Object
 { 
   /**
-   * @var RouteFactory
+   * @var MyCodeLab\Routing\Factory
    */
   protected $factory;
   
@@ -18,11 +18,11 @@ class RouteMap extends Object
   protected $routes;
   
   /**
-   * @param RouteFactory $factory
+   * @param MyCodeLab\Routing\Factory $factory
    */
-  public function __construct(RouteFactory $factory = null)
+  public function __construct(Factory $factory = null)
   {
-    $this->factory = $factory ?? new RouteFactory();
+    $this->factory = $factory ?? new Factory();
   }
   
   /**
@@ -33,7 +33,7 @@ class RouteMap extends Object
    */
   public function register($template, $action)
   {
-    $this->routes[] = $this->factory->compileRoute($template, $action);
+    $this->routes[] = $this->factory->newRoute($template, $action);
     
     return $this;
   }
@@ -49,15 +49,18 @@ class RouteMap extends Object
    */
   public function match(Url $url)
   {
-    $path = $url->path;
-    
     foreach ($this->routes as $route) {
-      if ($route->pattern->match($path)) {
-        return $route;
+      if ($route->matches($url)) {
+        return $route->finalize($url);
       }
     }
     
     throw new RouteNotFoundException("No route found for $url");
+  }
+  
+  protected function extractRouteParams()
+  {
+    
   }
   
 }

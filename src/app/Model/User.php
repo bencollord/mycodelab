@@ -1,12 +1,12 @@
 <?php
 
-namespace MyCodeLab\Auth;
+namespace MyPhpWebsiteUserAuth\Model;
 
 use MyCodeLab\System\Object;
 use MyCodeLab\Database\Connection as Database;
-use MyCodeLab\Auth\Exceptions\RegistrationException;
+use MyCodeLab\Auth\{Identity, FailedRegistrationException};
 
-class User extends Object
+class User extends Object implements Identity
 {  
   const TABLE = AUTH_USER_TABLE;
   
@@ -67,7 +67,7 @@ class User extends Object
     return $this->username;
   }
 
-  public function matchPassword($password)
+  public function validatePassword($password)
   {
     if ($this->password === $password) {
       return true;
@@ -99,12 +99,8 @@ class User extends Object
     $result = $command->write($sql, $params)->execute();
     
     if ($result->rowCount() < 1) {
-      throw new RegistrationException("Error saving user to database");
+      throw new FailedRegistrationException("Error saving user to database");
     } 
-    
-    return true;
   }
 
 }
-
-?>

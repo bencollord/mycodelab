@@ -25,15 +25,22 @@ class Authentication extends Object
   protected $message;
   
   /**
+   * @var MyCodeLab\Http\Request
+   */
+  protected $request; 
+  
+  /**
    * @var MyCodeLab\Http\Session
    */
   protected $session;
   
-  public function __construct(Session $session)
+  public function __construct(Request $request, Session $session)
   {
+    $this->request = $request;
     $this->session = $session;
   }
   
+  // @todo: remove static method so that User can be type hinted to an interface
   public function run($username, $password)
   {
     $user = User::find($username);
@@ -43,7 +50,7 @@ class Authentication extends Object
       $this->message = "Incorrect username!";
     }
     
-    if (!$user->passwordIs($password)) {
+    if (!$user->validatePassword($password)) {
       $this->result  = self::FAIL_INVALID;
       $this->message = "Incorrect password!";
     }

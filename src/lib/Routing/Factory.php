@@ -4,21 +4,9 @@ namespace MyCodeLab\Routing;
 
 use Closure;
 use MyCodeLab\System\Object;
-use MyCodeLab\DI\Registry;
 
 class Factory extends Object
 { 
-  
-  /**
-   * @var MyCodeLab\DI\Registry
-   */
-  protected $registry;
-  
-  public function __construct(Registry $registry)
-  {
-    $this->registry = $registry;
-  }
-  
   /**
    * Creates a new Route instance.
    * 
@@ -27,7 +15,7 @@ class Factory extends Object
    * 
    * @return Route
    */
-  public function compileRoute($template, $action)
+  public function newRoute($template, $action)
   {
     $tokenRegex = new Regex('/\<([A-Za-z0-9]+)(:.*?)?\>/');
     $tokens     = $tokenRegex->extractAll($template);
@@ -35,7 +23,7 @@ class Factory extends Object
     $parameters = new ParameterCollection();
     
     foreach ($tokens as $token) {
-      $parameters->append($this->buildParameter($token));
+      $parameters->append($this->newParameter($token));
     }
     
     return new Route($template, $action, $parameters);
@@ -49,7 +37,7 @@ class Factory extends Object
    *                       
    * @return RouteParameter
    */
-  public function compileParameter($token)
+  public function newParameter($token)
   {
     $token      = trim($token, '<>');
     $fragments  = explode(':', $token, 2);
