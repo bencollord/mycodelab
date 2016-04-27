@@ -33,7 +33,7 @@ class RouteMap extends Object
    */
   public function register($template, $action)
   {
-    $this->routes[] = $this->factory->compileRoute($template, $action);
+    $this->routes[] = $this->factory->newRoute($template, $action);
     
     return $this;
   }
@@ -49,15 +49,26 @@ class RouteMap extends Object
    */
   public function match(Url $url)
   {
-    $path = $url->path;
+    $foundRoute = false;
+    $result     = array();
     
     foreach ($this->routes as $route) {
-      if ($route->pattern->match($path)) {
-        return $route;
+      if ($route->matches($url)) {
+        $foundRoute = $route;
+        break;
       }
     }
     
-    throw new RouteNotFoundException("No route found for $url");
+    if (!$foundRoute) {
+      throw new RouteNotFoundException("No route found for $url");
+    }
+    
+    
+  }
+  
+  protected function extractRouteParams()
+  {
+    
   }
   
 }

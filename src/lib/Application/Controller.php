@@ -1,6 +1,6 @@
 <?php
 
-namespace MyCodeLab\Foundation;
+namespace MyCodeLab\Application;
 
 use MyCodeLab\System\Object;
 use MyCodeLab\Http\Request;

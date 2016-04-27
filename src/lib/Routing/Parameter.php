@@ -4,13 +4,8 @@ namespace MyCodeLab\Routing;
 
 use MyCodeLab\System\{Object, Regex};
 
-class RouteParameter extends Object
-{
-  const MATCH_ALL   = '/(.*)/'
-  const MATCH_INT   = '/[0-9]+/';
-  const MATCH_ALPHA = '/[A-Za-z]+/';
-  const MATCH_ALNUM = '/[A-Za-z0-9]+/';
-  
+class Parameter extends Object
+{  
   /**
    * @var string
    */

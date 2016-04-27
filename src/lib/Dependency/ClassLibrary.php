@@ -1,6 +1,6 @@
 <?php
 
-namespace MyCodeLab\System;
+namespace MyCodeLab\Dependency;
 
 class ClassLibrary
 {

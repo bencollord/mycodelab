@@ -1,6 +1,6 @@
 <?php
 
-use MyCodeLab\Foundation\Application;
+use MyCodeLab\Application\Kernel;
 use MyCodeLab\System\ClassLibrary;
 
 

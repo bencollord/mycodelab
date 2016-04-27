@@ -4,9 +4,20 @@ namespace MyCodeLab\Routing;
 
 use Closure;
 use MyCodeLab\System\{Object, Regex};
+use MyCodeLab\Http\Url;
 
+/**
+ * Translates a URL into an application action.
+ */
 class Route extends Object
 {
+  const TOKEN             = '/\<([A-Za-z0-9]+)(:.*?)?\>/';
+  const TOKEN_MATCH_ALL   = '/.+/';
+  const TOKEN_MATCH_ANY   = '/[^/]+/';
+  const TOKEN_MATCH_INT   = '/[0-9]+/';
+  const TOKEN_MATCH_ALPHA = '/[A-Za-z]+/';
+  const TOKEN_MATCH_ALNUM = '/[A-Za-z0-9]+/';
+  
   /**
    * @var string
    */
@@ -15,19 +26,19 @@ class Route extends Object
   /** 
    * @var string|Closure
    */
-  protected $action;
+  protected $handler;
   
   /**
-   * @var ParameterCollection
+   * @var ParameterSet
    */
   protected $parameters;
   
   /**
    * @param string              $template
-   * @param Closure             $handler
-   * @param ParameterCollection $parameters
+   * @param Closure|string      $handler
+   * @param ParameterSet $parameters
    */
-  public function __construct($template, Closure $handler, ParameterCollection $parameters = null)
+  public function __construct($template, $handler, ParameterSet $parameters = null)
   {
     $this->template   = $template;
     $this->action     = $handler;
@@ -43,26 +54,44 @@ class Route extends Object
   }
   
   /**
-   * @return MyCodeLab\System\Regex
+   * @return string
    */
   public function getPattern()
   {
-    $template = $this->template;
+    $pattern = $this->template;
     
     foreach ($this->parameters as $param)
     {
-      $template = str_replace("<{$param->name}>", $param->pattern);
+      $pattern = str_replace("<{$param->name}>", $param->pattern);
     }
     
-    return new Regex($template);
+    return $pattern;
   }
   
   /**
-   * @todo: Figure out extracting parameter values from URL and passing to action.
+   * @param MyCodeLab\Http\Url
+   * 
+   * @return bool
    */
-  public function dispatch()
+  public function matches(Url $url)
   {
-    return $this->action();
+    return new Regex($this->pattern)->match($url->path);
+  }
+  
+  
+  public function compile(Url $url)
+  {
+    foreach ($this->parameters as $param) {
+      // Extract matching value from Url
+      // Set parameter->value
+    }
+    
+    // If $this->handler is not a closure:
+    // Extract controller name and method
+    // Create instance of Target, passing in controller name,
+    // method name, and the parameters.
+    // If Closure, pass it in along with a generic controller,
+    // Such as MyCodeLab\Application\DefaultController and the params.
   }
   
 }

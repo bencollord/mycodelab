@@ -1,6 +1,6 @@
 <?php
 
-use MyCodeLab\Foundation\{Application, Kernel, Controller};
+use MyCodeLab\Application\{Kernel, Controller};
 use MyCodeLab\Dependency\Registry;
 use MyCodeLab\Http\{Request, Response, Session, Url};
 use MyCodeLab\Routing\{RouteMap, Factory as RouteFactory};
@@ -13,18 +13,14 @@ use MyPhpWebsiteUserAuth\Model\{Post, PostDataGateway};
 
 $registry = new Registry();
 
-$registry->bind('App', function () { 
-  return new Application([
+$registry->bind('Kernel', function () { 
+  return new Kernel([
     'root'        => '../' . __DIR__,                       // ROOT
     'environment' => 'dev',                                 // APP_ENV
     'domain'      => 'http:localhost/myphpwebsiteuserauth', // DOMAIN_NAME
     'debug'       => true,                                  // DEBUG
     'timezone'    => 'America/Boise'                        // TIMEZONE
   ]);
-});
-
-$registry->bind('Kernel', function () {
-  return new Kernel();
 });
 
 $registry->bind('Url', function () {

@@ -7,14 +7,14 @@ use MyCodeLab\System\Collection;
 /**
  * A strongly-typed collection of route parameters.
  */
-class ParameterCollection extends Collection
+class ParameterSet extends Collection
 {
   public function __construct($parameters)
   {
     foreach ($parameters as $param) {
       if (!$param instanceof RouteParameter) {
         throw new InvalidArgumentException(
-          "One of the items passed to ParameterCollection was not an instance of RouteParameter."
+          "One of the items passed to ParameterSet was not an instance of RouteParameter."
         );
       }
     }
@@ -55,7 +55,7 @@ class ParameterCollection extends Collection
    *           
    * @return $this
    */
-  public function merge(ParameterCollection $newItems)
+  public function merge(ParameterSet $newItems)
   {
     return parent::merge($value);
   }

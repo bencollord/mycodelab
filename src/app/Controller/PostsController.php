@@ -2,7 +2,7 @@
 
 namespace MyPhpWebsiteUserAuth\Controller;
 
-use MyCodeLab\Foundation\Controller;
+use MyCodeLab\Application\Controller;
 use MyCodeLab\View\{View, Page};
 
 class PostsController extends Controller

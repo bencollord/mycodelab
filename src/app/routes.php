@@ -1,6 +1,6 @@
 <?php
 
-use MyCodeLab\Foundation\RouteMap;
+use MyCodeLab\Routing\RouteMap;
 
 $map = new RouteMap();
 
@@ -13,6 +13,10 @@ $routes = [
   '/posts/<id:\d+>/edit'   => 'Posts:edit',
   '/posts/<id:\d+>/delete' => 'Posts:delete'
 ];
+
+//foreach ($routes as $route => $action) {
+//  $map->register($route, $action);
+//}
 
 $map->register('/test', function () {
   return (new Response())->write('Closure routing works!');

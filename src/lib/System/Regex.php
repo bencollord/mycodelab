@@ -71,7 +71,7 @@ class Regex extends Object
    *             A string containing the first match or an array
    *             with the full match and any captured subpatterns.
    */
-  public function extract($string, $subpatterns = false)
+  public function extractFirst($string, $subpatterns = false)
   {
     $matches = array();
     

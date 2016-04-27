@@ -17,34 +17,19 @@ class Factory extends Object
    */
   public function newRoute($template, $action)
   {
-    $tokenRegex = new Regex('/\<([A-Za-z0-9]+)(:.*?)?\>/');
+    $tokenRegex = new Regex(Route::TOKEN);
     $tokens     = $tokenRegex->extractAll($template);
     $template   = $tokenRegex->replace($template, '$1');
-    $parameters = new ParameterCollection();
-    
+    $params     = new ParameterSet();
+
     foreach ($tokens as $token) {
-      $parameters->append($this->buildParameter($token));
+      $token      = trim($token, '<>');
+      $fragments  = explode(':', $token, 2);
+      $paramName  = $fragments[0];
+      $constraint = $fragments[1] ?? null;
+
+      $params[]   = new Parameter($paramName, $constraint);
     }
-    
+
     return new Route($template, $action, $parameters);
   }
-
-  /**
-   * Creates a new RouteParameter instance.
-   * 
-   * @param  string $token The parameter marker parsed
-   *                       from the route string.
-   *                       
-   * @return RouteParameter
-   */
-  public function newParameter($token)
-  {
-    $token      = trim($token, '<>');
-    $fragments  = explode(':', $token, 2);
-    $paramName  = $fragments[0];
-    $constraint = $fragments[1] ?? null;
-    
-    return new RouteParameter($paramName, $constraint);
-  }
-
-}
