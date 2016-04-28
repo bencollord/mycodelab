@@ -17,7 +17,7 @@ class Factory extends Object
    */
   public function newRoute($template, $action)
   {
-    $tokenRegex = new Regex(Route::TOKEN);
+    $tokenRegex = new Regex(RouteToken::MARKER);
     $tokens     = $tokenRegex->extractAll($template);
     $template   = $tokenRegex->replace($template, '$1');
     $params     = new ParameterSet();

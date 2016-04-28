@@ -13,7 +13,7 @@ class Regex extends Object
   /**
    * @var string The regular expression to compare against
    */
-  private $pattern;
+  protected  $pattern;
   
   public function __construct($regex)
   {
