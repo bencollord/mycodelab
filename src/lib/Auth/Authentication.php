@@ -58,7 +58,7 @@ class Authentication extends Object
     $this->result  = self::SUCCESS;
     $this->message = "Login successful!";
     
-    $this->session->write('user', $user->username);
+    $this->session->set('user', $user->username);
     
     return $this;
   }
