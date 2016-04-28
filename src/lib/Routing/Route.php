@@ -11,13 +11,6 @@ use MyCodeLab\Http\Url;
  */
 class Route extends Object
 {
-  const TOKEN             = '/\<([A-Za-z0-9]+)(:.*?)?\>/';
-  const TOKEN_MATCH_ALL   = '/.+/';
-  const TOKEN_MATCH_ANY   = '/[^/]+/';
-  const TOKEN_MATCH_INT   = '/[0-9]+/';
-  const TOKEN_MATCH_ALPHA = '/[A-Za-z]+/';
-  const TOKEN_MATCH_ALNUM = '/[A-Za-z0-9]+/';
-  
   /**
    * @var string
    */
@@ -45,9 +38,9 @@ class Route extends Object
    */
   public function __construct($template, $handler, ParameterSet $parameters = null)
   {
-    $this->template   = $template;
-    $this->action     = $handler;
-    $this->parameters = $parameters;
+    $this->template = $template;
+    $this->action   = $handler;
+    $this->token    = $parameters;
   }
   
   /**
@@ -70,7 +63,7 @@ class Route extends Object
       $pattern = str_replace("<{$param->name}>", $param->pattern);
     }
     
-    return $pattern;
+    return new Regex($pattern);
   }
   
   /**
@@ -80,13 +73,14 @@ class Route extends Object
    */
   public function matches(Url $url)
   {
-    return new Regex($this->pattern)->match($url->path);
+    return $this->pattern->match($url->path);
   }
   
   
   public function target(Url $url)
   {
     $segments = $url->getPathSegments();
+    
     foreach ($this->parameters as $param) {
       // Extract matching value from Url
       // Set parameter->value

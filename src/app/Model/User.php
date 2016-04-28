@@ -4,7 +4,8 @@ namespace MyPhpWebsiteUserAuth\Model;
 
 use MyCodeLab\System\Object;
 use MyCodeLab\Database\Connection as Database;
-use MyCodeLab\Auth\{Identity, FailedRegistrationException};
+use MyCodeLab\Auth\Identity;
+use MyCodeLab\Auth\Exceptions\FailedRegistrationException;
 
 class User extends Object implements Identity
 {  
@@ -29,22 +30,6 @@ class User extends Object implements Identity
    * @var string
    */
   protected $password;
-
-  public static function find($username)
-  {
-    $sql      = "SELECT id, username, password FROM " . static::TABLE . " WHERE username=:username";
-    $params   = ['username' => $username];
-    $command  = Database::forge()->sqlCommand();
-    
-    $result = $command->write($sql, $params)->execute();
-
-    if(!$result->hasRows()) {
-      return false;
-    }
-
-    $user = new self($result['username'], $result['password'], $result['id']);
-    $user->isRegistered = true;
-  }
 
   public function __construct($username = null, $password = null, $id = null)
   {
