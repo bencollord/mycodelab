@@ -67,17 +67,15 @@ class Regex extends Object
    * @param  string $string
    * @param  bool   $subpatterns Whether or not to include parenthesized subpatterns.
    *                       
-   * @return string|string[] 
-   *             A string containing the first match or an array
-   *             with the full match and any captured subpatterns.
+   * @return string A string containing the first match.
    */
-  public function extractFirst($string, $subpatterns = false)
+  public function extractMatch($string)
   {
     $matches = array();
     
     preg_match($this->pattern, $string, $matches);
     
-    return ($subpatterns) ? $matches : $matches[0];
+    return $matches[0];
   }
   
   /**
@@ -88,13 +86,13 @@ class Regex extends Object
    * 
    * @return string[]
    */
-  public function extractAll($string, $subpatterns = false)
+  public function extractMatches($string)
   {
     $matches = array();
     
     preg_match_all($this->pattern, $string, $matches);
     
-    return ($subpatterns) ? $matches : $matches[0];
+    return $matches[0];
   }
   
   /**

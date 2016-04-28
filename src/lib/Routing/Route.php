@@ -23,6 +23,11 @@ class Route extends Object
    */
   protected $template;
   
+  /**
+   * @var MyCodeLab\System\Regex
+   */
+  protected $pattern
+  
   /** 
    * @var string|Closure
    */
@@ -34,9 +39,9 @@ class Route extends Object
   protected $parameters;
   
   /**
-   * @param string              $template
-   * @param Closure|string      $handler
-   * @param ParameterSet $parameters
+   * @param string         $template
+   * @param Closure|string $handler
+   * @param ParameterSet   $parameters
    */
   public function __construct($template, $handler, ParameterSet $parameters = null)
   {
@@ -79,8 +84,9 @@ class Route extends Object
   }
   
   
-  public function compile(Url $url)
+  public function target(Url $url)
   {
+    $segments = $url->getPathSegments();
     foreach ($this->parameters as $param) {
       // Extract matching value from Url
       // Set parameter->value

@@ -68,7 +68,7 @@ class Kernel extends Object
    * 
    * @return MyCodeLab\Http\Response
    */
-  public function dispatch(Request $request)
+  public function dispatch(Request $request, Response $response)
   {
     $path = $request->url->path;
     
@@ -77,7 +77,8 @@ class Kernel extends Object
       $route = $route->compile();
       
     } catch (RouteNotFoundException $e) {
-      
+      $response->setStatusCode(Response::STATUS_CODE['404'])
+               ->write("There's nothing here. Sorry!");
     }
         
     return $response;

@@ -149,7 +149,7 @@ class Url extends Object
    * 
    * @return string[]
    */
-  public function getPathFragments()
+  public function getPathSegments()
   {
     return explode('/', $this->path);
   }

@@ -9,7 +9,7 @@ class Response extends Object
   /**
    * @var string[]
    */
-  const STATUS_CODES = [
+  const STATUS_CODE = [
     100 =>  'Continue',
     101 =>  'Switching Protocols',
     200 =>  'OK',
@@ -97,7 +97,7 @@ class Response extends Object
    */
   public function write($input) 
   {
-    $this->body .= (string) $input;
+    $this->body .= $input;
     
     return $this;
   }
